@@ -50,39 +50,39 @@ app.use(session({
 }
 ));
 
-// function isValidSession(req) {
-//   if (req.session.authenticated) {
-//       return true;
-//   }
-//   return false;
-// }
+function isValidSession(req) {
+  if (req.session.authenticated) {
+      return true;
+  }
+  return false;
+}
 
-// function sessionValidation(req,res,next) {
-//   if (isValidSession(req)) {
-//       next();
-//   }
-//   else {
-//       res.redirect('/login');
-//   }
-// }
+function sessionValidation(req,res,next) {
+  if (isValidSession(req)) {
+      next();
+  }
+  else {
+      res.redirect('/login');
+  }
+}
 
-// function isAdmin(req) {
-//   if (req.session.user_type == 'admin') {
-//       return true;
-//   }
-//   return false;
-// }
+function isAdmin(req) {
+  if (req.session.user_type == 'admin') {
+      return true;
+  }
+  return false;
+}
 
-// function adminAuthorization(req, res, next) {
-//   if (!isAdmin(req)) {
-//       res.status(403);
-//       res.render("errorMessage", {error: "Not Authorized"});
-//       return;
-//   }
-//   else {
-//       next();
-//   }
-// }
+function adminAuthorization(req, res, next) {
+  if (!isAdmin(req)) {
+      res.status(403);
+      res.render("errorMessage", {error: "Not Authorized"});
+      return;
+  }
+  else {
+      next();
+  }
+}
 
 app.get("/", (req, res) => {
   if (req.session.user) {
@@ -249,6 +249,26 @@ app.get('/admin', async (req,res) => {
 
   res.render("admin", {users: result});
 });
+
+// app.post('/promote/:id', async (req, res) => {
+//   try {
+//     await userCollection.updateOne({ _id: new ObjectId(req.params.id) }, { $set: { type: 'admin' } });
+//     res.redirect('/admin');
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Error updating user');
+//   }
+// });
+
+// app.post('/demote/:id', async (req, res) => {
+//   try {
+//     await userCollection.updateOne({ _id: new ObjectId(req.params.id) }, { $set: { type: 'user' } });
+//     res.redirect('/admin');
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Error updating user');
+//   }
+// });
  
 app.get("*", (req, res) => {
   res.status(404);
