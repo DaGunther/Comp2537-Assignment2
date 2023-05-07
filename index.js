@@ -245,30 +245,23 @@ app.get("/logout", (req, res) => {
 });
 
 app.get('/admin', async (req,res) => {
-  const result = await userCollection.find().project({username: 1, _id: 1}).toArray();
-
+  const result = await userCollection.find().project({ username: 1, _id:1, user_type:1}).toArray();
   res.render("admin", {users: result});
 });
 
-// app.post('/promote/:id', async (req, res) => {
-//   try {
-//     await userCollection.updateOne({ _id: new ObjectId(req.params.id) }, { $set: { type: 'admin' } });
-//     res.redirect('/admin');
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Error updating user');
-//   }
-// });
+app.post('/promote', async (req,res) => {
+	var username = req.body.username;
 
-// app.post('/demote/:id', async (req, res) => {
-//   try {
-//     await userCollection.updateOne({ _id: new ObjectId(req.params.id) }, { $set: { type: 'user' } });
-//     res.redirect('/admin');
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Error updating user');
-//   }
-// });
+	await userCollection.updateOne({username: username}, {$set: {user_type: 'admin'}});
+	res.redirect('/admin');
+});
+
+app.post('/demote', async (req,res) => {
+	var username = req.body.username;
+
+	await userCollection.updateOne({username: username}, {$set: {user_type: 'user'}});
+	res.redirect('/admin');
+});
  
 app.get("*", (req, res) => {
   res.status(404);

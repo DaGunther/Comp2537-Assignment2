@@ -1,8 +1,8 @@
 <%- include("templates/header") %>
 
-<div class="box">
+<div class="box" style="height: 75%;">
     <div>Users:</div>
-    <ul>
+    <ul style="list-style: none;">
         <% let i=0; %>
 		<% for(i=0; i < users.length; i++) { %>
         <%- include('templates/user', {user: users[i]})  %> 
