@@ -244,7 +244,7 @@ app.get("/logout", (req, res) => {
   res.render("logout");
 });
 
-app.get('/admin', async (req,res) => {
+app.get('/admin',sessionValidation,adminAuthorization, async (req,res) => {
   const result = await userCollection.find().project({ username: 1, _id:1, user_type:1}).toArray();
   res.render("admin", {users: result});
 });
