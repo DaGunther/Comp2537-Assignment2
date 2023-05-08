@@ -17,6 +17,7 @@ const Joi = require("joi");
 app.set('view engine', 'ejs');
 app.use(express.static("public"));
 
+
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 hour  (hours * minutes * seconds * millis)
 
 /* secret information section */
@@ -50,8 +51,8 @@ app.use(session({
 }
 ));
 
-function isValidSession(req) {
-  if (req.session.authenticated) {
+function isAdmin(req) {
+  if (req.session.user_type == 'admin') {
       return true;
   }
   return false;
@@ -67,16 +68,17 @@ function sessionValidation(req,res,next) {
 }
 
 function isAdmin(req) {
-  if (req.session.user_type == 'admin') {
-      return true;
+  let user = req.body.user_type;
+  if (user === "admin") {
+    return true;
   }
   return false;
 }
 
 function adminAuthorization(req, res, next) {
-  if (!isAdmin(req)) {
-      res.status(403);
-      res.render("errorMessage", {error: "Not Authorized"});
+  if (isAdmin(req)) {
+    res.status(403);
+      res.render("errorMessage", {error: " 403 Not Authorized"});
       return;
   }
   else {
@@ -245,6 +247,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.get('/admin',sessionValidation,adminAuthorization, async (req,res) => {
+  
   const result = await userCollection.find().project({ username: 1, _id:1, user_type:1}).toArray();
   res.render("admin", {users: result});
 });
