@@ -51,8 +51,8 @@ app.use(session({
 }
 ));
 
-function isAdmin(req) {
-  if (req.session.user_type == 'admin') {
+function isValidSession(req) {
+  if (req.session.authenticated) {
       return true;
   }
   return false;
@@ -68,9 +68,8 @@ function sessionValidation(req,res,next) {
 }
 
 function isAdmin(req) {
-  let user = req.body.user_type;
-  if (user === "admin") {
-    return true;
+  if (req.session.user_type == 'admin') {
+      return true;
   }
   return false;
 }
